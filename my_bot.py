@@ -4,19 +4,21 @@ import os
 import logging
 import openai
 
-load_dotenv()
-TOKEN = os.getenv("TOKEN")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Connect with OpenAI
+load_dotenv()
+API_TOKEN =  os.getenv("TELEGRAM_BOT_TOKEN")
+OPENAI_API_KEY =  os.getenv("OPENAI_API_KEY")
+
+
 openai.api_key = OPENAI_API_KEY
 
 # print("Ok")
 
 MODEL_NAME = "gpt-3.5-turbo"
 
-#Initialize bot 
-bot = Bot(token=TOKEN)
+
+#Initialize bot
+bot = Bot(token=API_TOKEN)
 dispatcher = Dispatcher(bot)
 
 
@@ -27,21 +29,8 @@ class Reference:
 
 reference = Reference()
 
-
 def clear_past():
     reference.response = ""
-
-
-
-
-@dispatcher.message_handler(commands=['clear'])
-async def clear(message: types.Message):
-    """
-    A handler to clear the previous conversation and context.
-    """
-    clear_past()
-    await message.reply("I've cleared the past conversation and context.")
-
 
 
 
@@ -53,7 +42,6 @@ async def welcome(message: types.Message):
         message (types.Message): _description_
     """
     await message.reply("Hi\nI am a Chat Bot! Created by Bappy. How can i assist you?")
-
 
 
 
@@ -70,6 +58,17 @@ async def helper(message: types.Message):
     I hope this helps. :)
     """
     await message.reply(help_command)
+
+
+
+@dispatcher.message_handler(commands=['clear'])
+async def clear(message: types.Message):
+    """
+    A handler to clear the previous conversation and context.
+    """
+    clear_past()
+    await message.reply("I've cleared the past conversation and context.")
+
 
 
 
@@ -93,11 +92,10 @@ async def main_bot(message: types.Message):
     print(f">>> chatGPT: \n\t{reference.response}")
     await bot.send_message(chat_id = message.chat.id, text = reference.response)
     
-    
-
-
-
 
 
 if __name__ == "__main__":
     executor.start_polling(dispatcher, skip_updates=True)
+
+
+
